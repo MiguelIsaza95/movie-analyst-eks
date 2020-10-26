@@ -1,0 +1,9 @@
+/vols_docker/*
+/Terraform/terraform.tfstate
+/Terraform/terraform.tfstate.backup
+/Terraform/.terraform/*
+/.idea/.gitignore
+/.idea/misc.xml
+/.idea/modules.xml
+/movie-analyst-eks.iml
+/.idea/vcs.xml

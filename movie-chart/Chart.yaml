@@ -1,0 +1,6 @@
+#
+apiVersion: 2
+name: eks-movie
+description: chart to deploy on eks cluster
+version: 0.1.0
+appVersion: 1.0

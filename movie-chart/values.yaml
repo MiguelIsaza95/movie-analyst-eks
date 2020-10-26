@@ -1,0 +1,18 @@
+# Variables for docker containers and amount of pods to deploy
+proxy:
+  image: miguelisaza95/movie-analyst-proxy
+  version: 0.0.1
+  replicas: 1
+
+front:
+  image: miguelisaza95/movie-analyst-ui
+  version: 0.0.4
+  replicas: 1
+
+back:
+  image: miguelisaza95/movie-analyst-api
+  version: 'latest'
+  replicas: 1
+
+database:
+  endpoint: db.movieanalyst.org

@@ -1,0 +1,115 @@
+---
+# tasks file
+
+- name: install dependencies
+  apt:
+          name:
+                  - curl
+                  - apt-transport-https
+                  - gnupg
+          state: present
+          update_cache: yes
+
+- name: install openjdk-8-jdk
+  apt:
+          name: openjdk-8-jdk
+          state: latest
+
+- name: download jenkins key
+  apt_key:
+          url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
+          state: present
+
+- name: ensure the repo is configured
+  apt_repository:
+          repo: deb https://pkg.jenkins.io/debian-stable binary/
+          state: present
+          update_cache: yes
+
+- name: install jenkins
+  apt:
+          name: jenkins
+          state: present
+
+- name: disable jenkins initialization password screen
+  lineinfile:
+          dest: /etc/default/jenkins
+          insertafter: 'JAVA_ARGS='
+          regexp: 'JAVA_ARGS=\"\$JAVA_ARGS '
+          line: 'JAVA_ARGS="-Djenkins.install.runSetupWizard=false"'
+          state: present
+
+- name: modify variables in init file
+  lineinfile:
+          dest: /etc/default/jenkins
+          insertafter: 'JENKINS_ARGS='
+          regexp: 'JENKINS_ARGS=\"\$JENKINS_ARGS '
+          line: 'JENKINS_ARGS="--prefix=/jenkins"'
+          state: present
+
+- name: ensure jenkins home /var/lib/jenkins exist
+  file:
+          path: /var/lib/jenkins
+          state: directory
+          owner: jenkins
+          group: jenkins
+          mode: u+rwx
+          follow: true
+
+- name: create custom init script directory
+  file:
+          path: /var/lib/jenkins/init.groovy.d
+          state: directory
+          owner: jenkins
+          group: jenkins
+          mode: 0755
+
+- name: create default user
+  template:
+          src: basic-security.groovy
+          dest: /var/lib/jenkins/init.groovy.d/basic-security.groovy
+          mode: 0775
+
+- name: restart jenkins
+  service:
+          name: jenkins
+          state: restarted
+
+- name: ensure Jenkins is started and runs on startup.
+  service:
+          name: jenkins
+          state: started
+          enabled: yes
+
+- name: wait for jenkins to start
+  wait_for:
+          host: 127.0.0.1
+          port: 8080
+          delay: 120
+
+- name: install plugins
+  jenkins_plugin:
+          name: "{{ item }}"
+          url_username: admin
+          url_password: "password"
+          state: latest
+          with_dependencies: yes
+  ignore_errors: true
+  with_items: "{{ jenkins_plugins }}"
+
+- name: restart server
+  reboot:
+          msg:  "Reboot initiated by Ansible"
+          connect_timeout: 5
+          reboot_timeout: 600
+          pre_reboot_delay: 0
+          post_reboot_delay: 30
+          test_command: whoami
+  notify: terraform
+          
+
+- name: wait for jenkins to start
+  wait_for:
+          host: 127.0.0.1
+          port: 8080
+          delay: 120

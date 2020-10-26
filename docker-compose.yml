@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+        movie-analyst-proxy:
+                image: miguelisaza95/movie-analyst-proxy:0.0.1
+                ports:
+                        - "8080:80"
+                restart: always
+                networks:
+                        - movie-network
+                depends_on:
+                        - movie-analyst-db
+        movie-analyst-ui:
+                image: miguelisaza95/movie-analyst-ui:0.0.4
+                restart: always
+                networks:
+                        - movie-network
+        movie-analyst-api:
+                image: miguelisaza95/movie-analyst-api:0.0.5
+                restart: always                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+                depends_on:
+                        - movie-analyst-db
+                networks:
+                        - movie-network
+        movie-analyst-db:
+                image: miguelisaza95/movie-analyst-db:0.0.2
+                command: --default-authentication-plugin=mysql_native_password
+                restart: always
+                networks:
+                        - movie-network
+                volumes:
+                        - "/$PWD/vols_docker:/var/lib/mysql"
+networks:
+        movie-network:

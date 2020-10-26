@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: movie-analyst-ui
+  namespace: default
+  labels:
+    app: movie-analyst-ui
+spec:
+  replicas: 3
+  minReadySeconds: 45
+  selector:
+    matchLabels:
+      app: movie-analyst-ui
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: movie-analyst-ui
+    spec:
+      containers:
+        - image: miguelisaza95/movie-analyst-ui:0.0.4
+          imagePullPolicy: IfNotPresent
+          name: movie-analyst-ui
+          ports:
+            - containerPort: 3030
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 125m
+              memory: 120Mi
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30

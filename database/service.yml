@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels: #PODS
+    apps: movie-analyst-db
+  name: movie-analyst-db
+  namespace: default
+spec:
+  ports:
+    - port: 3306
+      protocol: TCP
+      targetPort: 3306
+  selector:
+    app: movie-analyst-db
+  sessionAffinity: None
+  type: ClusterIP

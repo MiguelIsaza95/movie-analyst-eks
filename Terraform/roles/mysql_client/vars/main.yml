@@ -1,0 +1,8 @@
+---
+
+# vars file
+home_path: /home/ubuntu
+db_user: prueba
+db_pass: password
+db_host: db.movieanalyst.org
+my_conf_path: /etc/mysql/conf.d/mysql.cnf

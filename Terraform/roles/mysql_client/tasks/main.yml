@@ -1,0 +1,32 @@
+---
+#tasks file
+
+- name: "Installing apt dependencies"
+  apt:
+          name: ["python3-pip","python3-dev", "libmysqlclient-dev", "mysql-client"]
+          update_cache: yes
+
+- name: Install the PyMySQL through pip
+  pip:
+          name: "PyMySQL"
+
+- name: set default auth method to mysql_native_password
+  lineinfile:
+          dest: "{{ my_conf_path }}"
+          insertafter: '[mysqld]'
+          line: 'default-auth=mysql_native_password'
+
+- name: Copy init.sql script
+  template:
+          src: init.sql
+          dest: "{{ home_path }}"
+          mode: 0775
+
+- name: execute sql script
+  mysql_db:
+          login_host: "{{ db_host }}"
+          login_user: "{{ db_user }}"
+          login_password: "{{ db_pass }}"
+          state: import
+          name: all
+          target: "{{ home_path }}/init.sql"

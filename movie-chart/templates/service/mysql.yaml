@@ -1,0 +1,11 @@
+# External Database service
+apiVersion: v1
+kind: Service
+metadata:
+  labels: #PODS
+    apps: mysql-service
+  name: mysql-service
+  namespace: default
+spec:
+  externalName: {{ .Values.database.endpoint }}
+  type: ExternalName

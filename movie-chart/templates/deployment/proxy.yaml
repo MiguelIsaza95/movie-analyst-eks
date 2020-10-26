@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: movie-analyst-proxy
+  namespace: default
+  labels:
+    app: movie-analyst-proxy
+spec:
+  replicas: {{ .Values.proxy.replicas }}
+  selector:
+    matchLabels:
+      app: movie-analyst-proxy
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: movie-analyst-proxy
+    spec:
+      containers:
+        - image: {{ .Values.proxy.image }}:{{ .Values.proxy.version }}
+          imagePullPolicy: IfNotPresent
+          name: movie-analyst-proxy
+          ports:
+            - containerPort: 80

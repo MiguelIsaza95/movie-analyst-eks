@@ -1,0 +1,18 @@
+---
+- name: "Provisioning jenkins server"
+  hosts: tag_Name_jenkins:&tag_Environment_Test
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+          - jenkins
+          - docker
+          - kubernetes
+
+- name: "Provisioning mysql server"
+  hosts: tag_Name_bastion:&tag_Environment_Test
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+          - mysql_client

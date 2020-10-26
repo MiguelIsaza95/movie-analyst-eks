@@ -1,0 +1,29 @@
+---
+# handlres file
+- name: update
+  apt:
+          name: '*'
+          update_cache: yes
+  listen: jenkins update
+
+- name: Reboot host and wait for it to restart
+  reboot:
+          msg:  "Reboot initiated by Ansible"
+          connect_timeout: 5
+          reboot_timeout: 600
+          pre_reboot_delay: 0
+          post_reboot_delay: 30
+          test_command: whoami
+  listen: jenkins restart
+
+- name: Install terraform
+  shell: |
+          sudo apt-get install -y unzip
+          wget https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_386.zip
+          unzip terraform_0.12.26_linux_386.zip
+          sudo mv terraform /usr/local/bin/
+          terraform --version
+  args:
+          warn: no
+  listen: terraform
+           

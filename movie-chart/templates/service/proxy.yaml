@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels: #PODS
+    apps: movie-analyst-proxy
+  name: movie-analyst-proxy
+  namespace: default
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: movie-analyst-proxy
+  sessionAffinity: None
+  type: LoadBalancer

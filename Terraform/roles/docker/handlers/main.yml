@@ -1,0 +1,6 @@
+---
+# handlers file
+- name: update
+  apt:
+          update_cache: yes
+  listen: apt update
